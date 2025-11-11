@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
 import authRoutes from "./src/routes/authRoutes.js";
+import testimonialRoutes from "./src/routes/testimonialRoutes.js";
 import { errorHandler } from "./src/middleware/errorHandler.js";
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(cookieParser());
 
 await connectDB();
 
+app.use("/api", testimonialRoutes);
 app.use("/api/auth", authRoutes);
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
