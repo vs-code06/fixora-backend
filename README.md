@@ -1,7 +1,17 @@
 # 🛠️ Fixora – Smart Local Handyman and Repair Service Finder
 
 > **A modern web platform that connects users with verified local service providers for home repairs and maintenance.**  
-> Built with React.js, Node.js, Express.js, and MongoDB.
+> Built with **React.js**, **Node.js**, **Express.js**, and **MongoDB**.
+
+---
+
+## 🌐 Live Demo
+
+| Component | URL |
+|------------|-----|
+| 🖥️ **Frontend (React)** | [https://fixora-frontend-zeta.vercel.app/](https://fixora-frontend-zeta.vercel.app/) |
+| ⚙️ **Backend (API)** | [https://fixora-backend-rqej.onrender.com/](https://fixora-backend-rqej.onrender.com/) |
+| 🗄️ **Database (MongoDB Atlas)** | [https://cloud.mongodb.com/v2/690a2fb38c220f45881b8199#/clusters](https://cloud.mongodb.com/v2/690a2fb38c220f45881b8199#/clusters) |
 
 ---
 
@@ -14,7 +24,7 @@ Many people rely on **unverified contacts** or **word-of-mouth**, which leads to
 - 💸 Overcharging or hidden fees  
 - ⚠️ Safety and reliability issues  
 
-**Fixora** solves this with a **centralized digital solution** that ensures:  
+**Fixora** provides a **centralized digital platform** that ensures:  
 ✅ Verified professionals  
 ✅ Transparent pricing  
 ✅ Secure bookings and reviews  
@@ -22,17 +32,24 @@ Many people rely on **unverified contacts** or **word-of-mouth**, which leads to
 ---
 
 ## 🧩 Table of Contents
+
 - [System Architecture](#-system-architecture)
 - [Key Features](#-key-features)
 - [Tech Stack](#-tech-stack)
 - [API Overview](#-api-overview)
 - [Data Flow](#-data-flow)
+- [Local Setup Guide](#️-local-setup-guide)
 - [Deployment](#-deployment)
 - [Future Enhancements](#-future-enhancements)
 - [Contributors](#-contributors)
 - [License](#-license)
 
 ---
+
+## 🏗️ System Architecture
+
+### **Architecture Overview**
+
 
 ### **Stack Overview**
 
@@ -43,7 +60,7 @@ Many people rely on **unverified contacts** or **word-of-mouth**, which leads to
 | **Database** | MongoDB |
 | **Authentication** | JWT (JSON Web Token) |
 | **AI Integration** | OpenAI API (for smart issue detection & cost estimation) |
-| **Hosting** | Vercel (https://fixora-frontend-zeta.vercel.app/), Render ([Backend](https://fixora-backend-rqej.onrender.com/api/health)), MongoDB Atlas ([Database](https://cloud.mongodb.com/v2/690a2fb38c220f45881b8199#/clusters)) |
+| **Hosting** | Vercel (Frontend), Render (Backend), MongoDB Atlas (Database) |
 
 ---
 
@@ -51,14 +68,14 @@ Many people rely on **unverified contacts** or **word-of-mouth**, which leads to
 
 | Category | Description |
 |-----------|--------------|
-| 🧑‍💼 **Authentication & Authorization** | Secure JWT-based login/signup for Users, Providers, and Admins |
+| 🧑‍💼 **Authentication & Authorization** | Secure JWT-based login/signup for users, providers, and admins |
 | 🔍 **Service Listings & Search** | Browse electricians, plumbers, and cleaners by location and category |
-| 🌟 **Verified Reviews & Ratings** | Only verified users can rate providers after completed jobs |
-| 💰 **Transparent Pricing** | Estimated service costs before booking prevent overcharging |
-| 🧰 **Provider Dashboard** | Manage bookings, update availability, and track earnings |
+| 🌟 **Verified Reviews & Ratings** | Only verified users can review after completing a job |
+| 💰 **Transparent Pricing** | Estimated service costs before booking to prevent overcharging |
+| 🧰 **Provider Dashboard** | Manage bookings, availability, and track earnings |
 | 📊 **User Dashboard** | Manage bookings, view history, and download invoices |
-| 💬 **Community Help Forum** | Post repair questions & get advice from experts or peers |
-| 🌐 **Cross-Platform Hosting** | Deployed web app accessible via desktop and mobile |
+| 💬 **Community Help Forum** | Ask repair-related questions and get expert or peer help |
+| 🌐 **Cross-Platform Hosting** | Fully deployed and accessible on desktop & mobile browsers |
 
 ---
 
@@ -79,7 +96,6 @@ Many people rely on **unverified contacts** or **word-of-mouth**, which leads to
 
 ### **Authentication & APIs**
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
-![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
 
 ### **Deployment**
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
@@ -104,14 +120,38 @@ Many people rely on **unverified contacts** or **word-of-mouth**, which leads to
 
 ## 🔄 Data Flow
 
+The application flow works as follows:
+
+1. 🧍 **User Action:**  
+   The user browses available services or searches for specific categories (e.g., electricians, plumbers).  
+
+2. 🌐 **API Call (Frontend → Backend):**  
+   The React frontend sends requests via Axios/Fetch to the Node.js + Express API.  
+
+3. 🧠 **Backend Processing:**  
+   The Express API handles logic such as authentication, CRUD operations, and input validation.  
+
+4. 🗄️ **Database Layer (MongoDB Atlas):**  
+   Data is securely stored and retrieved via Mongoose models — including user profiles, services, bookings, and reviews.  
+
+5. 🔁 **Response Cycle:**  
+   The backend returns JSON responses, which are displayed dynamically on the frontend UI.  
+
+6. ⭐ **Post-Service Feedback:**  
+   After the provider completes a service, the user leaves a verified review and rating to maintain quality and trust.
 
 ---
 
 ## ⚙️ Local Setup Guide
 
-Follow these steps to run Fixora locally 👇
+Follow these steps to run **Fixora** locally 👇
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/yourusername/fixora.git
-cd fixora
+git clone https://github.com/vs-code06/fixora.git
+cd fixora-backend
+npm install
+
+# Run frontend (in another terminal)
+node server.js
+
