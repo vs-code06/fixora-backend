@@ -14,7 +14,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 app.use(
   cors({
-    origin: [FRONTEND_URL],
+    origin: 'https://fixora-frontend-zeta.vercel.app',
     credentials: true,
   })
 );
