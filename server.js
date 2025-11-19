@@ -6,6 +6,7 @@ import connectDB from "./src/config/db.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import testimonialRoutes from "./src/routes/testimonialRoutes.js";
 import { errorHandler } from "./src/middleware/errorHandler.js";
+import serviceRoutes from "./src/routes/serviceRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -14,7 +15,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 app.use(
   cors({
-    origin: 'https://fixora-frontend-zeta.vercel.app',
+    origin: [FRONTEND_URL],
     credentials: true,
   })
 );
@@ -24,6 +25,7 @@ app.use(cookieParser());
 await connectDB();
 
 app.use("/api", testimonialRoutes);
+app.use("/api/services", serviceRoutes);
 app.use("/api/auth", authRoutes);
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
