@@ -11,14 +11,25 @@ import serviceRoutes from "./src/routes/serviceRoutes.js";
 dotenv.config();
 const app = express();
 
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const PROD_ORIGIN = process.env.FRONTEND_URL; 
+const DEV_ORIGIN = "http://localhost:3000";
 
-app.use(cors(
-  {
-    origin: FRONTEND_URL,
-    credentials: true,
-  }
-));
+const allowedOrigins = new Set([DEV_ORIGIN]);
+if (PROD_ORIGIN) allowedOrigins.add(PROD_ORIGIN);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.has(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS policy: origin ${origin} not allowed`), false);
+  },
+  credentials: true, 
+}));
+
 
 app.use(express.json());
 app.use(cookieParser());
