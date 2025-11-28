@@ -7,6 +7,8 @@ import authRoutes from "./src/routes/authRoutes.js";
 import testimonialRoutes from "./src/routes/testimonialRoutes.js";
 import { errorHandler } from "./src/middleware/errorHandler.js";
 import serviceRoutes from "./src/routes/serviceRoutes.js";
+import contactRoutes from "./src/routes/contactRoutes.js";
+import faqRoutes from "./src/routes/faqRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -18,9 +20,8 @@ console.log(`Configuring CORS for origin: ${FRONTEND_URL}`);
 app.use(cors({
   origin: FRONTEND_URL,
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
 
 app.use(express.json());
 app.use(cookieParser());
@@ -30,6 +31,9 @@ await connectDB();
 app.use("/api", testimonialRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/auth", authRoutes);
+app.get("/api/FAQ", contactRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/faqs", faqRoutes);
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 app.use(errorHandler);
