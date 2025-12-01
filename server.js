@@ -9,6 +9,10 @@ import { errorHandler } from "./src/middleware/errorHandler.js";
 import serviceRoutes from "./src/routes/serviceRoutes.js";
 import contactRoutes from "./src/routes/contactRoutes.js";
 import faqRoutes from "./src/routes/faqRoutes.js";
+import profileRoutes from "./src/routes/profileRoutes.js";
+import providerRoutes from "./src/routes/providerRoutes.js";
+import bookingRoutes from "./src/routes/bookingRoutes.js";
+
 
 dotenv.config();
 const app = express();
@@ -34,6 +38,9 @@ app.use("/api/auth", authRoutes);
 app.get("/api/FAQ", contactRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/faqs", faqRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/providers", providerRoutes);
+app.use("/api/bookings", bookingRoutes);
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 app.use(errorHandler);
