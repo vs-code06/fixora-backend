@@ -28,7 +28,7 @@ export const listProviders = async (req, res) => {
 
   const total = await User.countDocuments(filter);
   const providers = await User.find(filter)
-    .select("name avatar rating reviewsCount bio location categories priceRange isProviderVerified")
+    .select("name avatar rating reviewsCount bio location categories priceRange isProviderVerified phone")
     .sort(sortObj)
     .skip((page - 1) * pageSize)
     .limit(pageSize)
