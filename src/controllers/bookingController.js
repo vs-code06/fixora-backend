@@ -14,6 +14,10 @@ export async function createBooking(req, res) {
       return res.status(400).json({ error: "providerId, serviceTitle, scheduledAt and address are required" });
     }
 
+    // if (String(req.user._id) === String(providerId)) {
+    //   return res.status(400).json({ error: "Providers cannot book themselves" });
+    // }
+
     const provider = await User.findById(providerId);
     if (!provider || provider.role !== "provider") {
       return res.status(404).json({ error: "Provider not found" });
