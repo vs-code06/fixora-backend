@@ -1,12 +1,14 @@
 // src/routes/profileRoutes.js
 import express from "express";
-import { getMyProfile, updateMyProfile, requestProvider, deleteMyProfile, addFavorite, removeFavorite, listFavorites, checkFavorite} from "../controllers/profileController.js";
+import { getMyProfile, updateMyProfile, requestProvider, deleteMyProfile, addFavorite, removeFavorite, listFavorites, checkFavorite, uploadAvatar } from "../controllers/profileController.js";
 import { requireAuth } from "../middleware/auth.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
 router.get("/me", requireAuth, getMyProfile);
 router.put("/me", requireAuth, updateMyProfile);
+router.post("/me/avatar", requireAuth, upload.single("avatar"), uploadAvatar);
 router.post("/request-provider", requireAuth, requestProvider);
 router.delete("/me", requireAuth, deleteMyProfile);
 

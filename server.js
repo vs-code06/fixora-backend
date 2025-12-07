@@ -1,7 +1,7 @@
+import "dotenv/config";
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import testimonialRoutes from "./src/routes/testimonialRoutes.js";
@@ -12,9 +12,7 @@ import faqRoutes from "./src/routes/faqRoutes.js";
 import profileRoutes from "./src/routes/profileRoutes.js";
 import providerRoutes from "./src/routes/providerRoutes.js";
 import bookingRoutes from "./src/routes/bookingRoutes.js";
-
-
-dotenv.config();
+import adminRoutes from "./src/routes/admin.js";
 const app = express();
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
@@ -41,6 +39,7 @@ app.use("/api/faqs", faqRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/providers", providerRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/admin", adminRoutes);
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 app.use(errorHandler);
