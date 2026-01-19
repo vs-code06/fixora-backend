@@ -6,9 +6,64 @@ import mongoose from "mongoose";
 import dayjs from "dayjs";
 
 
+import Razorpay from "razorpay";
+import crypto from "crypto";
+
+const instance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+export async function createRazorpayOrder(req, res) {
+  try {
+    // console.log("DEBUG: createRazorpayOrder called");
+    // console.log("DEBUG: Keys:", process.env.RAZORPAY_KEY_ID ? "Found" : "Missing", process.env.RAZORPAY_KEY_ID === "YOUR_KEY_ID" ? "(Placeholder)" : "(Real)");
+
+    const { amount } = req.body;
+    // console.log("DEBUG RAW amount:", amount, typeof amount);
+    // console.log("DEBUG: Amount:", amount);
+
+    if (!process.env.RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID === "YOUR_KEY_ID") {
+      // console.error("DEBUG: Razorpay keys missing or default");
+      return res.status(500).json({ error: "Razorpay keys are not configured properly in .env" });
+    }
+
+    if (!amount) {
+      // console.error("DEBUG: No amount provided");
+      return res.status(400).json({ error: "Amount is required" });
+    }
+
+    const parsedAmount = Number(amount);
+
+    if (Number.isNaN(parsedAmount) || parsedAmount < 1) {
+      // console.error("DEBUG: Invalid amount:", parsedAmount);
+      return res.status(400).json({ error: "Invalid amount sent to Razorpay" });
+    }
+
+    // Amount should be in paisa (minimum 100 paisa needed i.e -> 1 INR)
+    const options = {
+      amount: Math.round(parsedAmount * 100),
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`
+    };
+
+    // console.log("DEBUG: Creating Razorpay order with options:", options);
+    const order = await instance.orders.create(options);
+    // console.log("DEBUG: Order created successfully:", order.id);
+    res.json(order);
+  } catch (err) {
+    // console.error("DEBUG: Razorpay Order Exception:", err);
+    console.error("Razorpay Order Error:", err);
+    res.status(500).json({ error: err.message || "Failed to create order" });
+  }
+}
+
 export async function createBooking(req, res) {
   try {
-    const { providerId, serviceTitle, scheduledAt, durationHours = 1, address, notes, category, price } = req.body;
+    const {
+      providerId, serviceTitle, scheduledAt, durationHours = 1, address, notes, category, price,
+      paymentMode, razorpayPaymentId, razorpayOrderId, razorpaySignature
+    } = req.body;
 
     if (!providerId || !serviceTitle || !scheduledAt || !address) {
       return res.status(400).json({ error: "providerId, serviceTitle, scheduledAt and address are required" });
@@ -45,6 +100,30 @@ export async function createBooking(req, res) {
       return res.status(409).json({ error: "Provider not available at selected time" });
     }
 
+    let isPaid = false;
+    let pStatus = "pending";
+
+    // Handle Online Payment Verification
+    if (paymentMode === "online") {
+      if (!razorpayPaymentId || !razorpayOrderId || !razorpaySignature) {
+        return res.status(400).json({ error: "Payment details missing" });
+      }
+
+      const body = razorpayOrderId + "|" + razorpayPaymentId;
+      // Use the secret from env
+      const expectedSignature = crypto
+        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+        .update(body.toString())
+        .digest("hex");
+
+      if (expectedSignature === razorpaySignature) {
+        isPaid = true;
+        pStatus = "paid";
+      } else {
+        return res.status(400).json({ error: "Payment verification failed" });
+      }
+    }
+
     const master = new BookingMaster({
       user: req.user._id,
       provider: providerId,
@@ -54,7 +133,13 @@ export async function createBooking(req, res) {
       durationHours: dur,
       address,
       notes,
-      price
+      price,
+      paymentMode: paymentMode || "offline",
+      paymentStatus: pStatus,
+      paid: isPaid,
+      razorpayOrderId,
+      razorpayPaymentId,
+      razorpaySignature
     });
 
     await master.save();
